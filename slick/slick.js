@@ -2149,7 +2149,6 @@
     Slick.prototype.swipeMove = function(event) {
 
         var _ = this,
-            edgeWasHit = false,
             curLeft, swipeDirection, swipeLength, positionOffset, touches;
 
         touches = event.originalEvent !== undefined ? event.originalEvent.touches : null;
@@ -2276,8 +2275,7 @@
 
     Slick.prototype.updateArrows = function() {
 
-        var _ = this,
-            centerOffset;
+        var _ = this;
 
         if ( _.options.arrows === true &&
             _.slideCount > _.options.slidesToShow &&
