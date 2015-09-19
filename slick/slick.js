@@ -160,7 +160,6 @@
             _.selectHandler = $.proxy(_.selectHandler, _);
             _.setPosition = $.proxy(_.setPosition, _);
             _.swipeHandler = $.proxy(_.swipeHandler, _);
-            _.dragHandler = $.proxy(_.dragHandler, _);
             _.keyHandler = $.proxy(_.keyHandler, _);
             _.autoPlayIterator = $.proxy(_.autoPlayIterator, _);
 
@@ -2393,8 +2392,6 @@
 
         var _ = this,
             centerOffset;
-
-        centerOffset = Math.floor(_.options.slidesToShow / 2);
 
         if ( _.options.arrows === true &&
             _.slideCount > _.options.slidesToShow &&
