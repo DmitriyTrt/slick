@@ -47,7 +47,6 @@
                 easing: 'linear',
                 edgeFriction: 0.35,
                 fade: false,
-                focusOnSelect: false,
                 infinite: true,
                 initialSlide: 0,
                 mobileFirst: false,
@@ -144,7 +143,6 @@
             _.autoPlayClear = _.proxy(_.autoPlayClear);
             _.changeSlide = _.proxy(_.changeSlide);
             _.clickHandler = _.proxy(_.clickHandler);
-            _.selectHandler = _.proxy(_.selectHandler);
             _.setPosition = _.proxy(_.setPosition);
             _.swipeHandler = _.proxy(_.swipeHandler);
             _.keyHandler = _.proxy(_.keyHandler);
@@ -718,10 +716,6 @@
             _.$list.unbind('keydown.slick', _.keyHandler);
         }
 
-        if (_.options.focusOnSelect === true) {
-            $(_.$slideTrack).children().unbind('click.slick', _.selectHandler);
-        }
-
         $(window).unbind('orientationchange.slick.slick-' + _.instanceUid, _.orientationChange);
 
         $(window).unbind('resize.slick.slick-' + _.instanceUid, _.resize);
@@ -1193,10 +1187,6 @@
             _.$list.bind('keydown.slick', _.keyHandler);
         }
 
-        if (_.options.focusOnSelect === true) {
-            $(_.$slideTrack).children().bind('click.slick', _.selectHandler);
-        }
-
         $(window).bind('orientationchange.slick.slick-' + _.instanceUid, _.proxy(_.orientationChange));
 
         $(window).bind('resize.slick.slick-' + _.instanceUid, _.proxy(_.resize));
@@ -1455,10 +1445,6 @@
         _.initDotEvents();
 
         _.checkResponsive(false, true);
-
-        if (_.options.focusOnSelect === true) {
-            $(_.$slideTrack).children().bind('click.slick', _.selectHandler);
-        }
 
         _.setSlideClasses(0);
 
@@ -1860,30 +1846,6 @@
                 _.autoPlayClear();
             }
         }
-    };
-
-    Slick.prototype.selectHandler = function(event) {
-
-        var _ = this;
-
-        var targetElement =
-            $(event.target).is('.slick-slide') ?
-                $(event.target) :
-                $(event.target).parents('.slick-slide');
-
-        var index = parseInt(targetElement.attr('data-slick-index'));
-
-        if (!index) index = 0;
-
-        if (_.slideCount <= _.options.slidesToShow) {
-
-            _.setSlideClasses(index);
-            return;
-
-        }
-
-        _.slideHandler(index);
-
     };
 
     Slick.prototype.slideHandler = function(index, sync, dontAnimate) {
