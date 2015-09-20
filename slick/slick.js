@@ -15,33 +15,21 @@
 
  */
 /* global window, document, define, jQuery, setInterval, clearInterval */
-(function(factory) {
+(function($) {
     'use strict';
-    if (typeof define === 'function' && define.amd) {
-        define(['jquery'], factory);
-    } else if (typeof exports !== 'undefined') {
-        module.exports = factory(require('jquery'));
-    } else {
-        factory(jQuery);
-    }
-
-}(function($) {
-    'use strict';
-    var Slick = window.Slick || {};
-
-    Slick = (function() {
+    var Slick = (function() {
 
         var instanceUid = 0;
 
-        function Slick(element, settings) {
+        function Slick($element, settings) {
 
             var _ = this, dataSettings;
 
             _.defaults = {
                 accessibility: true,
                 adaptiveHeight: false,
-                appendArrows: $(element),
-                appendDots: $(element),
+                appendArrows: $element,
+                appendDots: $element,
                 arrows: true,
                 prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button">Previous</button>',
                 nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button">Next</button>',
@@ -128,7 +116,7 @@
             _.respondTo = null;
             _.rowCount = 1;
             _.shouldClick = true;
-            _.$slider = $(element);
+            _.$slider = $element;
             _.$slidesCache = null;
             _.transformType = null;
             _.transitionType = null;
@@ -136,7 +124,7 @@
             _.windowWidth = 0;
             _.windowTimer = null;
 
-            dataSettings = $(element).data('slick') || {};
+            dataSettings = $element.data('slick') || {};
 
             _.options = $.extend({}, _.defaults, dataSettings, settings);
 
@@ -1401,7 +1389,7 @@
         var _ = this, breakpoint, currentBreakpoint, l,
             responsiveSettings = _.options.responsive || null;
 
-        if ( $.isArray(responsiveSettings) && responsiveSettings.length ) {
+        if ( Contextly.Utils.isArray(responsiveSettings) && responsiveSettings.length ) {
 
             _.respondTo = _.options.respondTo || 'window';
 
@@ -1609,9 +1597,9 @@
 
         var _ = this, l, item;
 
-        if( option === "responsive" && $.isArray(value)) {
+        if( option === "responsive" && Contextly.Utils.isArray(value)) {
             for ( item in value ) {
-                if( !$.isArray( _.options.responsive ) ) {
+                if( !Contextly.Utils.isArray( _.options.responsive ) ) {
                     _.options.responsive = [ value[item] ];
                 } else {
                     l = _.options.responsive.length-1;
@@ -2387,21 +2375,6 @@
 
     };
 
-    $.fn.slick = function() {
-        var _ = this,
-            opt = arguments[0],
-            args = Array.prototype.slice.call(arguments, 1),
-            l = _.length,
-            i,
-            ret;
-        for (i = 0; i < l; i++) {
-            if (typeof opt == 'object' || typeof opt == 'undefined')
-                _[i].slick = new Slick(_[i], opt);
-            else
-                ret = _[i].slick[opt].apply(_[i].slick, args);
-            if (typeof ret != 'undefined') return ret;
-        }
-        return _;
-    };
+    Contextly.Slick = Slick;
 
-}));
+})(jQuery);
