@@ -47,6 +47,8 @@
                 easing: 'linear',
                 edgeFriction: 0.35,
                 fade: false,
+                iframe: false,
+                iframeTarget: null,
                 infinite: true,
                 initialSlide: 0,
                 mobileFirst: false,
@@ -63,6 +65,7 @@
                 speed: 500,
                 swipe: true,
                 swipeToSlide: false,
+                swipeTimeout: 200,
                 touchMove: true,
                 touchThreshold: 5,
                 useCSS: true,
@@ -95,6 +98,7 @@
                 sliding: false,
                 slideOffset: 0,
                 swipeLeft: null,
+                swipeTimer: null,
                 $list: null,
                 touchObject: {},
                 transformsEnabled: false,
@@ -1155,30 +1159,13 @@
 
     };
 
-    Slick.prototype.initializeEvents = function() {
+    Slick.prototype.initListEvents = function() {
 
         var _ = this;
-
-        _.initArrowEvents();
-
-        _.initDotEvents();
 
         _.$list.bind('touchstart.slick mousedown.slick', {
             action: 'start'
         }, _.swipeHandler);
-        _.$list.bind('touchmove.slick mousemove.slick', {
-            action: 'move'
-        }, _.swipeHandler);
-        _.$list.bind('touchend.slick mouseup.slick', {
-            action: 'end'
-        }, _.swipeHandler);
-        _.$list.bind('touchcancel.slick mouseleave.slick', {
-            action: 'end'
-        }, _.swipeHandler);
-
-        _.$list.bind('click.slick', _.clickHandler);
-
-        $(document).bind(_.visibilityChange, _.proxy(_.visibility));
 
         _.$list.bind('mouseenter.slick', _.proxy(_.setPaused, true));
         _.$list.bind('mouseleave.slick', _.proxy(_.setPaused, false));
@@ -1187,11 +1174,74 @@
             _.$list.bind('keydown.slick', _.keyHandler);
         }
 
+        $('[draggable!=true]', _.$slideTrack).bind('dragstart', _.preventDefault);
+    };
+
+    Slick.prototype.getIframeEventsTarget = function() {
+
+        var _ = this;
+
+        if (_.options.iframe === false) {
+            return null;
+        }
+
+        var $frames = _.$list.find('iframe');
+        if (_.options.iframeFilter != null) {
+            $frames = $frames.filter(_.options.iframeFilter);
+        }
+        if (!$frames.length) {
+            return null;
+        }
+
+        var $target = $frames.contents();
+        if (_.options.iframeTarget != null) {
+            $target = $target.find(_.options.iframeTarget);
+        }
+        return $target;
+
+    };
+
+    Slick.prototype.initIframeEvents = function() {
+
+        var _ = this;
+
+        if (_.options.iframe === false) {
+            return;
+        }
+
+        var $target = _.getIframeEventsTarget();
+        if ($target == null) {
+            return;
+        }
+
+        $target.bind('touchstart.slick mousedown.slick', {
+            action: 'start'
+        }, _.swipeHandler);
+
+        if (_.options.accessibility === true) {
+            $target.bind('keydown.slick', _.keyHandler);
+        }
+    };
+
+    Slick.prototype.initializeEvents = function() {
+
+        var _ = this;
+
+        _.initArrowEvents();
+
+        _.initDotEvents();
+
+        _.initListEvents();
+
+        if (_.options.iframe === 'auto') {
+            _.initIframeEvents();
+        }
+
+        $(document).bind(_.visibilityChange, _.proxy(_.visibility));
+
         $(window).bind('orientationchange.slick.slick-' + _.instanceUid, _.proxy(_.orientationChange));
 
         $(window).bind('resize.slick.slick-' + _.instanceUid, _.proxy(_.resize));
-
-        $('[draggable!=true]', _.$slideTrack).bind('dragstart', _.preventDefault);
 
         $(window).bind('load.slick.slick-' + _.instanceUid, _.setPosition);
         $(document).bind('ready.slick.slick-' + _.instanceUid, _.setPosition);
@@ -2018,6 +2068,7 @@
             slideCount;
 
         _.dragging = false;
+        _.cleanUpDraggingEvents();
 
         _.shouldClick = (_.touchObject.swipeLength <= 10);
 
@@ -2081,18 +2132,114 @@
         switch (event.data.action) {
 
             case 'start':
-                _.swipeStart(event);
-                break;
+                _.swipeTimerClear();
+
+                if (!_.dragging) {
+                    _.swipeStart(event);
+                    break;
+                }
+                // Fallback to move action in case we're already in dragging mode.
 
             case 'move':
-                _.swipeMove(event);
+                if (_.swipeTimer == null) {
+                    _.swipeMove(event);
+                }
                 break;
 
             case 'end':
-                _.swipeEnd(event);
+                _.swipeTimerStart(_.proxy(_.swipeEnd, event));
                 break;
 
         }
+
+    };
+
+    Slick.prototype.swipeTimerStart = function(callback) {
+
+        var _ = this;
+
+        // TODO NOW Drop.
+        console.log('swipeTimerStart');
+
+        _.swipeTimerClear();
+        _.swipeTimer = setTimeout(function() {
+            // TODO NOW Drop.
+            console.log('swipeTimerComplete');
+
+            _.swipeTimer = null;
+            callback();
+        }, _.options.swipeTimeout);
+
+    };
+
+    Slick.prototype.swipeTimerClear = function() {
+
+        var _ = this;
+
+        // TODO NOW Drop.
+        console.log('swipeTimerClear');
+
+        if (_.swipeTimer != null) {
+            clearTimeout(_.swipeTimer);
+        }
+        _.swipeTimer = null;
+
+    };
+
+    Slick.prototype.initDraggingEvents = function() {
+
+        var _ = this;
+
+        _.$list.bind('touchmove.slick mousemove.slick', {
+            action: 'move'
+        }, _.swipeHandler);
+        _.$list.bind('touchend.slick mouseup.slick', {
+            action: 'end'
+        }, _.swipeHandler);
+        _.$list.bind('touchcancel.slick mouseleave.slick', {
+            action: 'end'
+        }, _.swipeHandler);
+        _.$list.bind('click.slick', _.clickHandler);
+
+        var $target = this.getIframeEventsTarget();
+        if ($target == null) {
+            return;
+        }
+
+        $target.bind('touchmove.slick mousemove.slick', {
+            action: 'move'
+        }, _.swipeHandler);
+        $target.bind('touchend.slick mouseup.slick', {
+            action: 'end'
+        }, _.swipeHandler);
+        $target.bind('touchcancel.slick mouseleave.slick', {
+            action: 'end'
+        }, _.swipeHandler);
+
+        // TODO NOW Move to options
+        $target.children().bind('click.slick', _.clickHandler);
+
+    };
+
+    Slick.prototype.cleanUpDraggingEvents = function() {
+
+        var _ = this;
+
+        _.$list.unbind('touchmove.slick mousemove.slick', _.swipeHandler);
+        _.$list.unbind('touchend.slick mouseup.slick', _.swipeHandler);
+        _.$list.unbind('touchcancel.slick mouseleave.slick', _.swipeHandler);
+        _.$list.unbind('click.slick', _.clickHandler);
+
+        var $target = this.getIframeEventsTarget();
+        if ($target == null) {
+            return;
+        }
+        $target.unbind('touchmove.slick mousemove.slick', _.swipeHandler);
+        $target.unbind('touchend.slick mouseup.slick', _.swipeHandler);
+        $target.unbind('touchcancel.slick mouseleave.slick', _.swipeHandler);
+
+        // TODO NOW Move to options
+        $target.children().unbind('click.slick', _.clickHandler);
 
     };
 
@@ -2109,8 +2256,8 @@
 
         curLeft = _.getLeft(_.currentSlide);
 
-        _.touchObject.curX = touches !== undefined ? touches[0].pageX : event.clientX;
-        _.touchObject.curY = touches !== undefined ? touches[0].pageY : event.clientY;
+        _.touchObject.curX = touches !== undefined ? touches[0].screenX : event.screenX;
+        _.touchObject.curY = touches !== undefined ? touches[0].screenY : event.screenY;
 
         _.touchObject.swipeLength = Math.round(Math.sqrt(
             Math.pow(_.touchObject.curX - _.touchObject.startX, 2)));
@@ -2183,10 +2330,11 @@
             touches = event.originalEvent.touches[0];
         }
 
-        _.touchObject.startX = _.touchObject.curX = touches !== undefined ? touches.pageX : event.clientX;
-        _.touchObject.startY = _.touchObject.curY = touches !== undefined ? touches.pageY : event.clientY;
+        _.touchObject.startX = _.touchObject.curX = touches !== undefined ? touches.screenX : event.screenX;
+        _.touchObject.startY = _.touchObject.curY = touches !== undefined ? touches.screenY : event.screenY;
 
         _.dragging = true;
+        _.initDraggingEvents();
 
     };
 
