@@ -441,7 +441,7 @@
 
         _.$slides.each(function(index, element) {
             $(element)
-                .attr('data-slick-index', index)
+                .attr('data-ctx-slick-index', index)
                 .data('originalStyling', $(element).attr('style') || '');
         });
 
@@ -801,7 +801,7 @@
             _.$slides
                 .removeClass('ctx-slick-slide ctx-slick-active ctx-slick-center ctx-slick-visible ctx-slick-current')
                 .removeAttr('aria-hidden')
-                .removeAttr('data-slick-index')
+                .removeAttr('data-ctx-slick-index')
                 .each(function(){
                     $(this).attr('style', $(this).data('originalStyling'));
                 });
@@ -1070,7 +1070,7 @@
                 }
             });
 
-            slidesTraversed = Math.abs($(swipedSlide).attr('data-slick-index') - _.currentSlide) || 1;
+            slidesTraversed = Math.abs($(swipedSlide).attr('data-ctx-slick-index') - _.currentSlide) || 1;
 
             return slidesTraversed;
 
@@ -1815,13 +1815,13 @@
                         infiniteCount); i -= 1) {
                     slideIndex = i - 1;
                     $(_.$slides[slideIndex]).clone(true).attr('id', '')
-                        .attr('data-slick-index', slideIndex - _.slideCount)
+                        .attr('data-ctx-slick-index', slideIndex - _.slideCount)
                         .prependTo(_.$slideTrack).addClass('ctx-slick-cloned');
                 }
                 for (i = 0; i < infiniteCount; i += 1) {
                     slideIndex = i;
                     $(_.$slides[slideIndex]).clone(true).attr('id', '')
-                        .attr('data-slick-index', slideIndex + _.slideCount)
+                        .attr('data-ctx-slick-index', slideIndex + _.slideCount)
                         .appendTo(_.$slideTrack).addClass('ctx-slick-cloned');
                 }
                 _.$slideTrack.find('.ctx-slick-cloned').find('[id]').each(function() {
