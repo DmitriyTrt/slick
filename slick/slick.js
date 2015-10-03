@@ -123,7 +123,7 @@
             _.windowWidth = 0;
             _.windowTimer = null;
 
-            dataSettings = $element.data('slick') || {};
+            dataSettings = $element.data('ctxSlick') || {};
 
             _.options = $.extend({}, _.defaults, dataSettings, settings);
 
@@ -442,7 +442,7 @@
         _.$slides.each(function(index, element) {
             $(element)
                 .attr('data-ctx-slick-index', index)
-                .data('originalStyling', $(element).attr('style') || '');
+                .data('ctxOriginalStyling', $(element).attr('style') || '');
         });
 
         _.$slidesCache = _.$slides;
@@ -803,7 +803,7 @@
                 .removeAttr('aria-hidden')
                 .removeAttr('data-ctx-slick-index')
                 .each(function(){
-                    $(this).attr('style', $(this).data('originalStyling'));
+                    $(this).attr('style', $(this).data('ctxOriginalStyling'));
                 });
 
             _.$slideTrack.children(this.options.slide).detach();
