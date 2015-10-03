@@ -683,47 +683,47 @@
 
         if (_.options.dots && _.$dots !== null) {
 
-            $('li', _.$dots).unbind('click.slick', _.changeSlide);
+            $('li', _.$dots).unbind('click.ctx-slick', _.changeSlide);
 
             if (_.options.pauseOnDotsHover === true && _.options.autoplay === true) {
 
                 $('li', _.$dots)
-                    .unbind('mouseenter.slick', _.proxy(_.setPaused, true))
-                    .unbind('mouseleave.slick', _.proxy(_.setPaused, false));
+                    .unbind('mouseenter.ctx-slick', _.proxy(_.setPaused, true))
+                    .unbind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
 
             }
 
         }
 
         if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
-            _.$prevArrow && _.$prevArrow.unbind('click.slick', _.changeSlide);
-            _.$nextArrow && _.$nextArrow.unbind('click.slick', _.changeSlide);
+            _.$prevArrow && _.$prevArrow.unbind('click.ctx-slick', _.changeSlide);
+            _.$nextArrow && _.$nextArrow.unbind('click.ctx-slick', _.changeSlide);
         }
 
-        _.$list.unbind('touchstart.slick mousedown.slick', _.swipeHandler);
-        _.$list.unbind('touchmove.slick mousemove.slick', _.swipeHandler);
-        _.$list.unbind('touchend.slick mouseup.slick', _.swipeHandler);
-        _.$list.unbind('touchcancel.slick mouseleave.slick', _.swipeHandler);
+        _.$list.unbind('touchstart.ctx-slick mousedown.ctx-slick', _.swipeHandler);
+        _.$list.unbind('touchmove.ctx-slick mousemove.ctx-slick', _.swipeHandler);
+        _.$list.unbind('touchend.ctx-slick mouseup.ctx-slick', _.swipeHandler);
+        _.$list.unbind('touchcancel.ctx-slick mouseleave.ctx-slick', _.swipeHandler);
 
-        _.$list.unbind('click.slick', _.clickHandler);
+        _.$list.unbind('click.ctx-slick', _.clickHandler);
 
         $(document).unbind(_.visibilityChange, _.visibility);
 
-        _.$list.unbind('mouseenter.slick', _.proxy(_.setPaused, true));
-        _.$list.unbind('mouseleave.slick', _.proxy(_.setPaused, false));
+        _.$list.unbind('mouseenter.ctx-slick', _.proxy(_.setPaused, true));
+        _.$list.unbind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
 
         if (_.options.accessibility === true) {
-            _.$list.unbind('keydown.slick', _.keyHandler);
+            _.$list.unbind('keydown.ctx-slick', _.keyHandler);
         }
 
-        $(window).unbind('orientationchange.slick.slick-' + _.instanceUid, _.orientationChange);
+        $(window).unbind('orientationchange.ctx-slick.ctx-slick-' + _.instanceUid, _.orientationChange);
 
-        $(window).unbind('resize.slick.slick-' + _.instanceUid, _.resize);
+        $(window).unbind('resize.ctx-slick.ctx-slick-' + _.instanceUid, _.resize);
 
         $('[draggable!=true]', _.$slideTrack).unbind('dragstart', _.preventDefault);
 
-        $(window).unbind('load.slick.slick-' + _.instanceUid, _.setPosition);
-        $(document).unbind('ready.slick.slick-' + _.instanceUid, _.setPosition);
+        $(window).unbind('load.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
+        $(document).unbind('ready.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
     };
 
     Slick.prototype.cleanUpRows = function() {
@@ -1127,10 +1127,10 @@
         var _ = this;
 
         if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
-            _.$prevArrow.bind('click.slick', {
+            _.$prevArrow.bind('click.ctx-slick', {
                 message: 'previous'
             }, _.changeSlide);
-            _.$nextArrow.bind('click.slick', {
+            _.$nextArrow.bind('click.ctx-slick', {
                 message: 'next'
             }, _.changeSlide);
         }
@@ -1142,15 +1142,15 @@
         var _ = this;
 
         if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
-            $('li', _.$dots).bind('click.slick', {
+            $('li', _.$dots).bind('click.ctx-slick', {
                 message: 'index'
             }, _.changeSlide);
         }
 
         if (_.options.dots === true && _.options.pauseOnDotsHover === true && _.options.autoplay === true) {
             $('li', _.$dots)
-                .bind('mouseenter.slick', _.proxy(_.setPaused, true))
-                .bind('mouseleave.slick', _.proxy(_.setPaused, false));
+                .bind('mouseenter.ctx-slick', _.proxy(_.setPaused, true))
+                .bind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
         }
 
     };
@@ -1163,38 +1163,38 @@
 
         _.initDotEvents();
 
-        _.$list.bind('touchstart.slick mousedown.slick', {
+        _.$list.bind('touchstart.ctx-slick mousedown.ctx-slick', {
             action: 'start'
         }, _.swipeHandler);
-        _.$list.bind('touchmove.slick mousemove.slick', {
+        _.$list.bind('touchmove.ctx-slick mousemove.ctx-slick', {
             action: 'move'
         }, _.swipeHandler);
-        _.$list.bind('touchend.slick mouseup.slick', {
+        _.$list.bind('touchend.ctx-slick mouseup.ctx-slick', {
             action: 'end'
         }, _.swipeHandler);
-        _.$list.bind('touchcancel.slick mouseleave.slick', {
+        _.$list.bind('touchcancel.ctx-slick mouseleave.ctx-slick', {
             action: 'end'
         }, _.swipeHandler);
 
-        _.$list.bind('click.slick', _.clickHandler);
+        _.$list.bind('click.ctx-slick', _.clickHandler);
 
         $(document).bind(_.visibilityChange, _.proxy(_.visibility));
 
-        _.$list.bind('mouseenter.slick', _.proxy(_.setPaused, true));
-        _.$list.bind('mouseleave.slick', _.proxy(_.setPaused, false));
+        _.$list.bind('mouseenter.ctx-slick', _.proxy(_.setPaused, true));
+        _.$list.bind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
 
         if (_.options.accessibility === true) {
-            _.$list.bind('keydown.slick', _.keyHandler);
+            _.$list.bind('keydown.ctx-slick', _.keyHandler);
         }
 
-        $(window).bind('orientationchange.slick.slick-' + _.instanceUid, _.proxy(_.orientationChange));
+        $(window).bind('orientationchange.ctx-slick.ctx-slick-' + _.instanceUid, _.proxy(_.orientationChange));
 
-        $(window).bind('resize.slick.slick-' + _.instanceUid, _.proxy(_.resize));
+        $(window).bind('resize.ctx-slick.ctx-slick-' + _.instanceUid, _.proxy(_.resize));
 
         $('[draggable!=true]', _.$slideTrack).bind('dragstart', _.preventDefault);
 
-        $(window).bind('load.slick.slick-' + _.instanceUid, _.setPosition);
-        $(document).bind('ready.slick.slick-' + _.instanceUid, _.setPosition);
+        $(window).bind('load.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
+        $(document).bind('ready.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
 
     };
 
