@@ -157,8 +157,10 @@
 
 
             _.registerBreakpoints();
-            _.init(true);
+            _.init();
             _.checkResponsive(true);
+
+            _.$slider.trigger('init', [_]);
 
         }
 
@@ -1093,7 +1095,7 @@
 
     };
 
-    Slick.prototype.init = function(creation) {
+    Slick.prototype.init = function() {
 
         var _ = this;
 
@@ -1110,10 +1112,6 @@
             _.updateArrows();
             _.updateDots();
 
-        }
-
-        if (creation) {
-            _.$slider.trigger('init', [_]);
         }
 
         if (_.options.accessibility === true) {
@@ -1369,6 +1367,8 @@
                     index: currentSlide
                 }
             }, false);
+
+            _.$slider.trigger('refresh', [_]);
 
         }
 
