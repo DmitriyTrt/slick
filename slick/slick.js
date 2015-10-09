@@ -27,7 +27,6 @@
 
             _.defaults = {
                 accessibility: true,
-                adaptiveHeight: false,
                 appendArrows: $element,
                 appendDots: $element,
                 arrows: true,
@@ -187,22 +186,10 @@
         return proxy;
     };
 
-    Slick.prototype.animateHeight = function() {
-        var _ = this;
-        if (_.options.slidesToShow === 1 && _.options.adaptiveHeight === true && _.options.vertical === false) {
-            var targetHeight = _.$slides.eq(_.currentSlide).outerHeight(true);
-            _.$list.animate({
-                height: targetHeight
-            }, _.options.speed);
-        }
-    };
-
     Slick.prototype.animateSlide = function(targetLeft, callback) {
 
         var animProps = {},
             _ = this;
-
-        _.animateHeight();
 
         if (_.options.rtl === true && _.options.vertical === false) {
             targetLeft = -targetLeft;
@@ -1462,17 +1449,6 @@
 
     };
 
-    Slick.prototype.setHeight = function() {
-
-        var _ = this;
-
-        if (_.options.slidesToShow === 1 && _.options.adaptiveHeight === true && _.options.vertical === false) {
-            var targetHeight = _.$slides.eq(_.currentSlide).outerHeight(true);
-            _.$list.css('height', targetHeight);
-        }
-
-    };
-
     Slick.prototype.setOption = Slick.prototype.slickSetOption = function(option, value, refresh) {
 
         var _ = this, l, item;
@@ -1509,8 +1485,6 @@
         var _ = this;
 
         _.setDimensions();
-
-        _.setHeight();
 
         _.setCSS(_.getLeft(_.currentSlide));
 
