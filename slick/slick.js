@@ -759,7 +759,7 @@
 
         _.cleanUpEvents();
 
-        $('.ctx-slick-cloned', _.$slider).detach();
+        $('.ctx-slick-cloned', _.$slider).remove();
 
         if (_.$dots) {
             _.$dots.remove();
@@ -806,11 +806,11 @@
                     $(this).attr('style', $(this).data('ctxOriginalStyling'));
                 });
 
-            _.$slideTrack.children(this.options.slide).detach();
+            _.$slideTrack.children(this.options.slide).remove();
 
-            _.$slideTrack.detach();
+            _.$slideTrack.remove();
 
-            _.$list.detach();
+            _.$list.remove();
 
             _.$slider.append(_.$slides);
         }
