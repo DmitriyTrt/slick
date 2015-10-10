@@ -66,7 +66,6 @@
                 useCSS: true,
                 useTransform: false,
                 variableWidth: false,
-                vertical: false,
                 verticalSwiping: false,
                 waitForAnimate: true,
                 zIndex: 1000
@@ -191,19 +190,13 @@
         var animProps = {},
             _ = this;
 
-        if (_.options.rtl === true && _.options.vertical === false) {
+        if (_.options.rtl === true) {
             targetLeft = -targetLeft;
         }
         if (_.transformsEnabled === false) {
-            if (_.options.vertical === false) {
-                _.$slideTrack.animate({
-                    left: targetLeft
-                }, _.options.speed, _.options.easing, callback);
-            } else {
-                _.$slideTrack.animate({
-                    top: targetLeft
-                }, _.options.speed, _.options.easing, callback);
-            }
+            _.$slideTrack.animate({
+                left: targetLeft
+            }, _.options.speed, _.options.easing, callback);
 
         } else {
 
@@ -220,15 +213,9 @@
                     easing: _.options.easing,
                     step: function(now) {
                         now = Math.ceil(now);
-                        if (_.options.vertical === false) {
-                            animProps[_.animType] = 'translate(' +
-                                now + 'px, 0px)';
-                            _.$slideTrack.css(animProps);
-                        } else {
-                            animProps[_.animType] = 'translate(0px,' +
-                                now + 'px)';
-                            _.$slideTrack.css(animProps);
-                        }
+                        animProps[_.animType] = 'translate(' +
+                            now + 'px, 0px)';
+                        _.$slideTrack.css(animProps);
                     },
                     complete: function() {
                         if (callback) {
@@ -242,11 +229,7 @@
                 _.applyTransition();
                 targetLeft = Math.ceil(targetLeft);
 
-                if (_.options.vertical === false) {
-                    animProps[_.animType] = 'translate3d(' + targetLeft + 'px, 0px, 0px)';
-                } else {
-                    animProps[_.animType] = 'translate3d(0px,' + targetLeft + 'px, 0px)';
-                }
+                animProps[_.animType] = 'translate3d(' + targetLeft + 'px, 0px, 0px)';
                 _.$slideTrack.css(animProps);
 
                 if (callback) {
@@ -858,39 +841,31 @@
 
         var _ = this,
             targetLeft,
-            verticalHeight,
-            verticalOffset = 0,
             targetSlide;
 
         _.slideOffset = 0;
-        verticalHeight = _.$slides.eq(0).outerHeight(true);
 
         if (_.options.infinite === true) {
             if (_.slideCount > _.options.slidesToShow) {
                 _.slideOffset = (_.slideWidth * _.options.slidesToShow) * -1;
-                verticalOffset = (verticalHeight * _.options.slidesToShow) * -1;
             }
             if (_.slideCount % _.options.slidesToScroll !== 0) {
                 if (slideIndex + _.options.slidesToScroll > _.slideCount && _.slideCount > _.options.slidesToShow) {
                     if (slideIndex > _.slideCount) {
                         _.slideOffset = ((_.options.slidesToShow - (slideIndex - _.slideCount)) * _.slideWidth) * -1;
-                        verticalOffset = ((_.options.slidesToShow - (slideIndex - _.slideCount)) * verticalHeight) * -1;
                     } else {
                         _.slideOffset = ((_.slideCount % _.options.slidesToScroll) * _.slideWidth) * -1;
-                        verticalOffset = ((_.slideCount % _.options.slidesToScroll) * verticalHeight) * -1;
                     }
                 }
             }
         } else {
             if (slideIndex + _.options.slidesToShow > _.slideCount) {
                 _.slideOffset = ((slideIndex + _.options.slidesToShow) - _.slideCount) * _.slideWidth;
-                verticalOffset = ((slideIndex + _.options.slidesToShow) - _.slideCount) * verticalHeight;
             }
         }
 
         if (_.slideCount <= _.options.slidesToShow) {
             _.slideOffset = 0;
-            verticalOffset = 0;
         }
 
         if (_.options.centerMode === true && _.options.infinite === true) {
@@ -900,11 +875,7 @@
             _.slideOffset += _.slideWidth * Math.floor(_.options.slidesToShow / 2);
         }
 
-        if (_.options.vertical === false) {
-            targetLeft = ((slideIndex * _.slideWidth) * -1) + _.slideOffset;
-        } else {
-            targetLeft = ((slideIndex * verticalHeight) * -1) + verticalOffset;
-        }
+        targetLeft = ((slideIndex * _.slideWidth) * -1) + _.slideOffset;
 
         if (_.options.variableWidth === true) {
 
@@ -1414,34 +1385,22 @@
 
         var _ = this;
 
-        if (_.options.vertical === false) {
-            if (_.options.centerMode === true) {
-                _.$list.css({
-                    padding: ('0px ' + _.options.centerPadding)
-                });
-            }
-        } else {
-            _.$list.height(_.$slides.eq(0).outerHeight(true) * _.options.slidesToShow);
-            if (_.options.centerMode === true) {
-                _.$list.css({
-                    padding: (_.options.centerPadding + ' 0px')
-                });
-            }
+        if (_.options.centerMode === true) {
+            _.$list.css({
+                padding: ('0px ' + _.options.centerPadding)
+            });
         }
 
         _.listWidth = _.$list.width();
         _.listHeight = _.$list.height();
 
 
-        if (_.options.vertical === false && _.options.variableWidth === false) {
+        if (_.options.variableWidth === false) {
             _.slideWidth = Math.ceil(_.listWidth / _.options.slidesToShow);
             _.$slideTrack.width(Math.ceil((_.slideWidth * _.$slideTrack.children('.ctx-slick-slide').length)));
 
-        } else if (_.options.variableWidth === true) {
-            _.$slideTrack.width(5000 * _.slideCount);
         } else {
-            _.slideWidth = Math.ceil(_.listWidth);
-            _.$slideTrack.height(Math.ceil((_.$slides.eq(0).outerHeight(true) * _.$slideTrack.children('.ctx-slick-slide').length)));
+            _.$slideTrack.width(5000 * _.slideCount);
         }
 
         var offset = _.$slides.eq(0).outerWidth(true) - _.$slides.eq(0).width();
@@ -1497,13 +1456,7 @@
         var _ = this,
             bodyStyle = document.body.style;
 
-        _.positionProp = _.options.vertical === true ? 'top' : 'left';
-
-        if (_.positionProp === 'top') {
-            _.$slider.addClass('ctx-slick-vertical');
-        } else {
-            _.$slider.removeClass('ctx-slick-vertical');
-        }
+        _.positionProp = 'left';
 
         if (bodyStyle.WebkitTransition !== undefined ||
             bodyStyle.MozTransition !== undefined ||
@@ -1973,11 +1926,7 @@
             }
         }
 
-        if (_.options.vertical === false) {
-            _.swipeLeft = curLeft + swipeLength * positionOffset;
-        } else {
-            _.swipeLeft = curLeft + (swipeLength * (_.$list.height() / _.listWidth)) * positionOffset;
-        }
+        _.swipeLeft = curLeft + swipeLength * positionOffset;
         if (_.options.verticalSwiping === true) {
             _.swipeLeft = curLeft + swipeLength * positionOffset;
         }

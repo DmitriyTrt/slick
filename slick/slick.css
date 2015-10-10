@@ -80,11 +80,6 @@
 .ctx-slick-loading .ctx-slick-slide {
   visibility: hidden;
 }
-.ctx-slick-vertical .ctx-slick-slide {
-  display: block;
-  height: auto;
-  border: 1px solid transparent;
-}
 
 .ctx-slick-arrow.ctx-slick-hidden {
   display: none;
