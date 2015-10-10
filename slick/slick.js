@@ -66,7 +66,6 @@
                 useCSS: true,
                 useTransform: false,
                 variableWidth: false,
-                verticalSwiping: false,
                 waitForAnimate: true,
                 zIndex: 1000
             };
@@ -1779,13 +1778,6 @@
         if ((swipeAngle >= 135) && (swipeAngle <= 225)) {
             return (_.options.rtl === false ? 'right' : 'left');
         }
-        if (_.options.verticalSwiping === true) {
-            if ((swipeAngle >= 35) && (swipeAngle <= 135)) {
-                return 'left';
-            } else {
-                return 'right';
-            }
-        }
 
         return 'vertical';
 
@@ -1852,11 +1844,6 @@
         _.touchObject.minSwipe = _.listWidth / _.options
             .touchThreshold;
 
-        if (_.options.verticalSwiping === true) {
-            _.touchObject.minSwipe = _.listHeight / _.options
-                .touchThreshold;
-        }
-
         switch (event.data.action) {
 
             case 'start':
@@ -1894,11 +1881,6 @@
         _.touchObject.swipeLength = Math.round(Math.sqrt(
             Math.pow(_.touchObject.curX - _.touchObject.startX, 2)));
 
-        if (_.options.verticalSwiping === true) {
-            _.touchObject.swipeLength = Math.round(Math.sqrt(
-                Math.pow(_.touchObject.curY - _.touchObject.startY, 2)));
-        }
-
         swipeDirection = _.swipeDirection();
 
         if (swipeDirection === 'vertical') {
@@ -1910,10 +1892,6 @@
         }
 
         positionOffset = (_.options.rtl === false ? 1 : -1) * (_.touchObject.curX > _.touchObject.startX ? 1 : -1);
-        if (_.options.verticalSwiping === true) {
-            positionOffset = _.touchObject.curY > _.touchObject.startY ? 1 : -1;
-        }
-
 
         swipeLength = _.touchObject.swipeLength;
 
@@ -1927,9 +1905,6 @@
         }
 
         _.swipeLeft = curLeft + swipeLength * positionOffset;
-        if (_.options.verticalSwiping === true) {
-            _.swipeLeft = curLeft + swipeLength * positionOffset;
-        }
 
         if (_.options.touchMove === false) {
             return false;
