@@ -32,8 +32,6 @@
                 arrows: true,
                 prevArrow: '<button type="button" data-role="none" class="ctx-slick-prev ctx-icon ctx-icon-left-circled" aria-label="Previous" tabindex="0" role="button">Previous</button>',
                 nextArrow: '<button type="button" data-role="none" class="ctx-slick-next ctx-icon ctx-icon-right-circled" aria-label="Next" tabindex="0" role="button">Next</button>',
-                autoplay: false,
-                autoplaySpeed: 3000,
                 centerMode: false,
                 centerPadding: '50px',
                 cssEase: 'ease',
@@ -48,8 +46,6 @@
                 infinite: true,
                 initialSlide: 0,
                 mobileFirst: false,
-                pauseOnHover: true,
-                pauseOnDotsHover: false,
                 respondTo: 'window',
                 responsive: null,
                 rtl: false,
@@ -71,7 +67,6 @@
             _.initials = {
                 animating: false,
                 dragging: false,
-                autoPlayTimer: null,
                 currentDirection: 0,
                 currentLeft: null,
                 currentSlide: 0,
@@ -103,8 +98,6 @@
             _.breakpoints = [];
             _.breakpointSettings = [];
             _.cssTransitions = false;
-            _.hidden = 'hidden';
-            _.paused = false;
             _.positionProp = null;
             _.respondTo = null;
             _.rowCount = 1;
@@ -113,7 +106,6 @@
             _.$slidesCache = null;
             _.transformType = null;
             _.transitionType = null;
-            _.visibilityChange = 'visibilitychange';
             _.windowWidth = 0;
             _.windowTimer = null;
 
@@ -125,22 +117,11 @@
 
             _.originalSettings = _.options;
 
-            if (typeof document.mozHidden !== 'undefined') {
-                _.hidden = 'mozHidden';
-                _.visibilityChange = 'mozvisibilitychange';
-            } else if (typeof document.webkitHidden !== 'undefined') {
-                _.hidden = 'webkitHidden';
-                _.visibilityChange = 'webkitvisibilitychange';
-            }
-
-            _.autoPlay = _.proxy(_.autoPlay);
-            _.autoPlayClear = _.proxy(_.autoPlayClear);
             _.changeSlide = _.proxy(_.changeSlide);
             _.clickHandler = _.proxy(_.clickHandler);
             _.setPosition = _.proxy(_.setPosition);
             _.swipeHandler = _.proxy(_.swipeHandler);
             _.keyHandler = _.proxy(_.keyHandler);
-            _.autoPlayIterator = _.proxy(_.autoPlayIterator);
 
             _.instanceUid = instanceUid++;
 
@@ -252,65 +233,6 @@
         transition[_.transitionType] = _.transformType + ' ' + _.options.speed + 'ms ' + _.options.cssEase;
 
         _.$slideTrack.css(transition);
-
-    };
-
-    Slick.prototype.autoPlay = function() {
-
-        var _ = this;
-
-        if (_.autoPlayTimer) {
-            clearInterval(_.autoPlayTimer);
-        }
-
-        if (_.slideCount > _.options.slidesToShow && _.paused !== true) {
-            _.autoPlayTimer = setInterval(_.autoPlayIterator,
-                _.options.autoplaySpeed);
-        }
-
-    };
-
-    Slick.prototype.autoPlayClear = function() {
-
-        var _ = this;
-        if (_.autoPlayTimer) {
-            clearInterval(_.autoPlayTimer);
-        }
-
-    };
-
-    Slick.prototype.autoPlayIterator = function() {
-
-        var _ = this;
-
-        if (_.options.infinite === false) {
-
-            if (_.direction === 1) {
-
-                if ((_.currentSlide + 1) === _.slideCount -
-                    1) {
-                    _.direction = 0;
-                }
-
-                _.slideHandler(_.currentSlide + _.options.slidesToScroll);
-
-            } else {
-
-                if ((_.currentSlide - 1 === 0)) {
-
-                    _.direction = 1;
-
-                }
-
-                _.slideHandler(_.currentSlide - _.options.slidesToScroll);
-
-            }
-
-        } else {
-
-            _.slideHandler(_.currentSlide + _.options.slidesToScroll);
-
-        }
 
     };
 
@@ -614,14 +536,6 @@
 
             $('li', _.$dots).unbind('click.ctx-slick', _.changeSlide);
 
-            if (_.options.pauseOnDotsHover === true && _.options.autoplay === true) {
-
-                $('li', _.$dots)
-                    .unbind('mouseenter.ctx-slick', _.proxy(_.setPaused, true))
-                    .unbind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
-
-            }
-
         }
 
         if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
@@ -635,11 +549,6 @@
         _.$list.unbind('touchcancel.ctx-slick mouseleave.ctx-slick', _.swipeHandler);
 
         _.$list.unbind('click.ctx-slick', _.clickHandler);
-
-        $(document).unbind(_.visibilityChange, _.visibility);
-
-        _.$list.unbind('mouseenter.ctx-slick', _.proxy(_.setPaused, true));
-        _.$list.unbind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
 
         if (_.options.accessibility === true) {
             _.$list.unbind('keydown.ctx-slick', _.keyHandler);
@@ -669,8 +578,6 @@
     Slick.prototype.destroy = function(refresh) {
 
         var _ = this;
-
-        _.autoPlayClear();
 
         _.touchObject = {};
 
@@ -982,12 +889,6 @@
             }, _.changeSlide);
         }
 
-        if (_.options.dots === true && _.options.pauseOnDotsHover === true && _.options.autoplay === true) {
-            $('li', _.$dots)
-                .bind('mouseenter.ctx-slick', _.proxy(_.setPaused, true))
-                .bind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
-        }
-
     };
 
     Slick.prototype.initializeEvents = function() {
@@ -1012,11 +913,6 @@
         }, _.swipeHandler);
 
         _.$list.bind('click.ctx-slick', _.clickHandler);
-
-        $(document).bind(_.visibilityChange, _.proxy(_.visibility));
-
-        _.$list.bind('mouseenter.ctx-slick', _.proxy(_.setPaused, true));
-        _.$list.bind('mouseleave.ctx-slick', _.proxy(_.setPaused, false));
 
         if (_.options.accessibility === true) {
             _.$list.bind('keydown.ctx-slick', _.keyHandler);
@@ -1047,12 +943,6 @@
         if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
 
             _.$dots.show();
-
-        }
-
-        if (_.options.autoplay === true) {
-
-            _.autoPlay();
 
         }
 
@@ -1116,24 +1006,6 @@
 
     };
 
-    Slick.prototype.pause = Slick.prototype.slickPause = function() {
-
-        var _ = this;
-
-        _.autoPlayClear();
-        _.paused = true;
-
-    };
-
-    Slick.prototype.play = Slick.prototype.slickPlay = function() {
-
-        var _ = this;
-
-        _.paused = false;
-        _.autoPlay();
-
-    };
-
     Slick.prototype.postSlide = function(index) {
 
         var _ = this;
@@ -1146,9 +1018,6 @@
 
         _.swipeLeft = null;
 
-        if (_.options.autoplay === true && _.paused === false) {
-            _.autoPlay();
-        }
         if (_.options.accessibility === true) {
             _.initADA();
         }
@@ -1589,20 +1458,6 @@
 
     };
 
-    Slick.prototype.setPaused = function(paused) {
-
-        var _ = this;
-
-        if (_.options.autoplay === true && _.options.pauseOnHover === true) {
-            _.paused = paused;
-            if (!paused) {
-                _.autoPlay();
-            } else {
-                _.autoPlayClear();
-            }
-        }
-    };
-
     Slick.prototype.slideHandler = function(index, sync, dontAnimate) {
 
         var targetSlide, animSlide, oldSlide, slideLeft, targetLeft = null,
@@ -1644,10 +1499,6 @@
                 _.postSlide(targetSlide);
             }
             return;
-        }
-
-        if (_.options.autoplay === true) {
-            clearInterval(_.autoPlayTimer);
         }
 
         if (targetSlide < 0) {
@@ -1979,21 +1830,6 @@
 
     };
 
-    Slick.prototype.visibility = function() {
-
-        var _ = this;
-
-        if (document[_.hidden]) {
-            _.paused = true;
-            _.autoPlayClear();
-        } else {
-            if (_.options.autoplay === true) {
-                _.paused = false;
-                _.autoPlay();
-            }
-        }
-
-    };
     Slick.prototype.initADA = function() {
         var _ = this;
         _.$slides.add(_.$slideTrack.find('.ctx-slick-cloned')).attr({
