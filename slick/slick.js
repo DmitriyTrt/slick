@@ -37,7 +37,6 @@
                 easing: 'linear',
                 infinite: true,
                 initialSlide: 0,
-                mobileFirst: false,
                 respondTo: 'window',
                 responsive: null,
                 slide: '',
@@ -324,14 +323,8 @@
 
             for (breakpoint in _.breakpoints) {
                 if (_.breakpoints.hasOwnProperty(breakpoint)) {
-                    if (_.originalSettings.mobileFirst === false) {
-                        if (respondToWidth < _.breakpoints[breakpoint]) {
-                            targetBreakpoint = _.breakpoints[breakpoint];
-                        }
-                    } else {
-                        if (respondToWidth > _.breakpoints[breakpoint]) {
-                            targetBreakpoint = _.breakpoints[breakpoint];
-                        }
+                    if (respondToWidth < _.breakpoints[breakpoint]) {
+                        targetBreakpoint = _.breakpoints[breakpoint];
                     }
                 }
             }
@@ -856,7 +849,7 @@
             }
 
             _.breakpoints.sort(function(a, b) {
-                return ( _.options.mobileFirst ) ? a-b : b-a;
+                return b-a;
             });
 
         }
