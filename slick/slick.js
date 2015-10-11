@@ -42,7 +42,6 @@
                 mobileFirst: false,
                 respondTo: 'window',
                 responsive: null,
-                rtl: false,
                 slide: '',
                 slidesToShow: 1,
                 slidesToScroll: 1,
@@ -160,9 +159,6 @@
         var animProps = {},
             _ = this;
 
-        if (_.options.rtl === true) {
-            targetLeft = -targetLeft;
-        }
         if (_.transformsEnabled === false) {
             _.$slideTrack.animate({
                 left: targetLeft
@@ -171,9 +167,6 @@
         } else {
 
             if (_.cssTransitions === false) {
-                if (_.options.rtl === true) {
-                    _.currentLeft = -(_.currentLeft);
-                }
                 $({
                     animStart: _.currentLeft
                 }).animate({
@@ -1070,9 +1063,6 @@
             positionProps = {},
             x, y;
 
-        if (_.options.rtl === true) {
-            position = -position;
-        }
         x = _.positionProp == 'left' ? Math.ceil(position) + 'px' : '0px';
         y = _.positionProp == 'top' ? Math.ceil(position) + 'px' : '0px';
 
@@ -1452,13 +1442,13 @@
         }
 
         if ((swipeAngle <= 45) && (swipeAngle >= 0)) {
-            return (_.options.rtl === false ? 'left' : 'right');
+            return 'left';
         }
         if ((swipeAngle <= 360) && (swipeAngle >= 315)) {
-            return (_.options.rtl === false ? 'left' : 'right');
+            return 'left';
         }
         if ((swipeAngle >= 135) && (swipeAngle <= 225)) {
-            return (_.options.rtl === false ? 'right' : 'left');
+            return 'right';
         }
 
         return 'vertical';
@@ -1573,7 +1563,7 @@
             event.preventDefault();
         }
 
-        positionOffset = (_.options.rtl === false ? 1 : -1) * (_.touchObject.curX > _.touchObject.startX ? 1 : -1);
+        positionOffset = _.touchObject.curX > _.touchObject.startX ? 1 : -1;
 
         swipeLength = _.touchObject.swipeLength;
 
