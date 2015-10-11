@@ -110,7 +110,7 @@
             _.init();
             _.checkResponsive(true);
 
-            _.$slider.trigger('init', [_]);
+            _.$slider.triggerHandler('init', [_]);
 
         }
 
@@ -351,7 +351,7 @@
 
             // only trigger breakpoints during an actual break. not on initialize.
             if( !initial && triggerBreakpoint !== false ) {
-                _.$slider.trigger('breakpoint', [_, triggerBreakpoint]);
+                _.$slider.triggerHandler('breakpoint', [_, triggerBreakpoint]);
             }
         }
 
@@ -513,7 +513,7 @@
         _.unslicked = true;
 
         if(!refresh) {
-            _.$slider.trigger('destroy', [_]);
+            _.$slider.triggerHandler('destroy', [_]);
         }
 
     };
@@ -701,7 +701,7 @@
 
         var _ = this;
 
-        _.$slider.trigger('afterChange', [_, index]);
+        _.$slider.triggerHandler('afterChange', [_, index]);
 
         _.animating = false;
 
@@ -734,7 +734,7 @@
                 }
             }, false);
 
-            _.$slider.trigger('refresh', [_]);
+            _.$slider.triggerHandler('refresh', [_]);
 
         }
 
@@ -847,7 +847,7 @@
 
         _.setCSS(_.getLeft(_.currentSlide));
 
-        _.$slider.trigger('setPosition', [_]);
+        _.$slider.triggerHandler('setPosition', [_]);
 
     };
 
@@ -1068,7 +1068,7 @@
 
         _.animating = true;
 
-        _.$slider.trigger('beforeChange', [_, _.currentSlide, animSlide]);
+        _.$slider.triggerHandler('beforeChange', [_, _.currentSlide, animSlide]);
 
         _.currentSlide = animSlide;
 
