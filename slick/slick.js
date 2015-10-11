@@ -591,13 +591,6 @@
 
     };
 
-    Slick.prototype.getCurrent = Slick.prototype.slickCurrentSlide = function() {
-
-        var _ = this;
-        return _.currentSlide;
-
-    };
-
     Slick.prototype.getDotCount = function() {
 
         var _ = this;
@@ -670,14 +663,6 @@
 
     };
 
-    Slick.prototype.getOption = Slick.prototype.slickGetOption = function(option) {
-
-        var _ = this;
-
-        return _.options[option];
-
-    };
-
     Slick.prototype.getNavigableIndexes = function() {
 
         var _ = this,
@@ -704,12 +689,6 @@
 
     };
 
-    Slick.prototype.getSlick = function() {
-
-        return this;
-
-    };
-
     Slick.prototype.getSlideCount = function() {
 
         var _ = this,
@@ -732,19 +711,6 @@
         } else {
             return _.options.slidesToScroll;
         }
-
-    };
-
-    Slick.prototype.goTo = Slick.prototype.slickGoTo = function(slide, dontAnimate) {
-
-        var _ = this;
-
-        _.changeSlide({
-            data: {
-                message: 'index',
-                index: parseInt(slide)
-            }
-        }, dontAnimate);
 
     };
 
@@ -872,18 +838,6 @@
         _.initUI();
     };
 
-    Slick.prototype.next = Slick.prototype.slickNext = function() {
-
-        var _ = this;
-
-        _.changeSlide({
-            data: {
-                message: 'next'
-            }
-        });
-
-    };
-
     Slick.prototype.orientationChange = function() {
 
         var _ = this;
@@ -908,18 +862,6 @@
         if (_.options.accessibility === true) {
             _.initADA();
         }
-
-    };
-
-    Slick.prototype.prev = Slick.prototype.slickPrev = function() {
-
-        var _ = this;
-
-        _.changeSlide({
-            data: {
-                message: 'previous'
-            }
-        });
 
     };
 
@@ -1007,42 +949,6 @@
 
     };
 
-    Slick.prototype.reinit = function() {
-
-        var _ = this;
-
-        _.$slides =
-            _.$slideTrack
-                .children(_.options.slide)
-                .addClass('ctx-slick-slide');
-
-        _.slideCount = _.$slides.length;
-
-        if (_.currentSlide >= _.slideCount && _.currentSlide !== 0) {
-            _.currentSlide = _.currentSlide - _.options.slidesToScroll;
-        }
-
-        if (_.slideCount <= _.options.slidesToShow) {
-            _.currentSlide = 0;
-        }
-
-        _.registerBreakpoints();
-
-        _.setProps();
-        _.setupInfinite();
-        _.buildArrows();
-        _.updateArrows();
-        _.initArrowEvents();
-
-        _.checkResponsive(false, true);
-
-        _.setSlideClasses(0);
-
-        _.setPosition();
-
-        _.$slider.trigger('reInit', [_]);
-    };
-
     Slick.prototype.resize = function() {
 
         var _ = this;
@@ -1101,37 +1007,6 @@
 
         var offset = _.$slides.eq(0).outerWidth(true) - _.$slides.eq(0).width();
         _.$slideTrack.children('.ctx-slick-slide').width(_.slideWidth - offset);
-
-    };
-
-    Slick.prototype.setOption = Slick.prototype.slickSetOption = function(option, value, refresh) {
-
-        var _ = this, l, item;
-
-        if( option === "responsive" && Contextly.Utils.isArray(value)) {
-            for ( item in value ) {
-                if( !Contextly.Utils.isArray( _.options.responsive ) ) {
-                    _.options.responsive = [ value[item] ];
-                } else {
-                    l = _.options.responsive.length-1;
-                    // loop through the responsive object and splice out duplicates.
-                    while( l >= 0 ) {
-                        if( _.options.responsive[l].breakpoint === value[item].breakpoint ) {
-                            _.options.responsive.splice(l,1);
-                        }
-                        l--;
-                    }
-                    _.options.responsive.push( value[item] );
-                }
-            }
-        } else {
-            _.options[option] = value;
-        }
-
-        if (refresh === true) {
-            _.unload();
-            _.reinit();
-        }
 
     };
 
@@ -1609,27 +1484,6 @@
         _.touchObject.startY = _.touchObject.curY = touches !== undefined ? touches.pageY : event.clientY;
 
         _.dragging = true;
-
-    };
-
-    Slick.prototype.unload = function() {
-
-        var _ = this;
-
-        $('.ctx-slick-cloned', _.$slider).remove();
-
-        if (_.$prevArrow && _.htmlExpr.test(_.options.prevArrow)) {
-            _.$prevArrow.remove();
-        }
-
-        if (_.$nextArrow && _.htmlExpr.test(_.options.nextArrow)) {
-            _.$nextArrow.remove();
-        }
-
-        _.$slides
-            .removeClass('ctx-slick-slide ctx-slick-active ctx-slick-visible ctx-slick-current')
-            .attr('aria-hidden', 'true')
-            .css('width', '');
 
     };
 
