@@ -61,7 +61,6 @@
                 slideWidth: null,
                 $slideTrack: null,
                 $slides: null,
-                sliding: false,
                 slideOffset: 0,
                 $list: null,
                 transformsEnabled: false,
@@ -77,7 +76,6 @@
             _.breakpointSettings = [];
             _.cssTransitions = false;
             _.positionProp = null;
-            _.rowCount = 1;
             _.$slider = $element;
             _.$slidesCache = null;
             _.transformType = null;

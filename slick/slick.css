@@ -58,9 +58,6 @@
 [dir="rtl"] .ctx-slick-slide {
   float: right;
 }
-.ctx-slick-slide img {
-  display: block;
-}
 .ctx-slick-initialized .ctx-slick-slide {
   display: block;
 }
