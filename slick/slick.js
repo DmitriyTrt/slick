@@ -53,7 +53,6 @@
                 touchThreshold: 5,
                 useCSS: true,
                 useTransform: false,
-                variableWidth: false,
                 waitForAnimate: true,
                 zIndex: 1000
             };
@@ -682,27 +681,6 @@
 
         targetLeft = ((slideIndex * _.slideWidth) * -1) + _.slideOffset;
 
-        if (_.options.variableWidth === true) {
-
-            if (_.slideCount <= _.options.slidesToShow || _.options.infinite === false) {
-                targetSlide = _.$slideTrack.children('.ctx-slick-slide').eq(slideIndex);
-            } else {
-                targetSlide = _.$slideTrack.children('.ctx-slick-slide').eq(slideIndex + _.options.slidesToShow);
-            }
-
-            targetLeft = targetSlide[0] ? targetSlide[0].offsetLeft * -1 : 0;
-
-            if (_.options.centerMode === true) {
-                if (_.slideCount <= _.options.slidesToShow || _.options.infinite === false) {
-                    targetSlide = _.$slideTrack.children('.ctx-slick-slide').eq(slideIndex);
-                } else {
-                    targetSlide = _.$slideTrack.children('.ctx-slick-slide').eq(slideIndex + _.options.slidesToShow + 1);
-                }
-                targetLeft = targetSlide[0] ? targetSlide[0].offsetLeft * -1 : 0;
-                targetLeft += (_.$list.width() - targetSlide.outerWidth()) / 2;
-            }
-        }
-
         return targetLeft;
 
     };
@@ -1136,17 +1114,11 @@
         _.listWidth = _.$list.width();
         _.listHeight = _.$list.height();
 
-
-        if (_.options.variableWidth === false) {
-            _.slideWidth = Math.ceil(_.listWidth / _.options.slidesToShow);
-            _.$slideTrack.width(Math.ceil((_.slideWidth * _.$slideTrack.children('.ctx-slick-slide').length)));
-
-        } else {
-            _.$slideTrack.width(5000 * _.slideCount);
-        }
+        _.slideWidth = Math.ceil(_.listWidth / _.options.slidesToShow);
+        _.$slideTrack.width(Math.ceil((_.slideWidth * _.$slideTrack.children('.ctx-slick-slide').length)));
 
         var offset = _.$slides.eq(0).outerWidth(true) - _.$slides.eq(0).width();
-        if (_.options.variableWidth === false) _.$slideTrack.children('.ctx-slick-slide').width(_.slideWidth - offset);
+        _.$slideTrack.children('.ctx-slick-slide').width(_.slideWidth - offset);
 
     };
 
