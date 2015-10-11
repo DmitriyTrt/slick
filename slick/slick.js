@@ -26,7 +26,6 @@
             var _ = this, dataSettings;
 
             _.defaults = {
-                accessibility: true,
                 appendArrows: $element,
                 arrows: true,
                 prevArrow: '<button type="button" data-role="none" class="ctx-slick-prev ctx-icon ctx-icon-left-circled" aria-label="Previous" tabindex="0" role="button">Previous</button>',
@@ -96,7 +95,6 @@
 
             _.changeSlide = _.proxy(_.changeSlide);
             _.setPosition = _.proxy(_.setPosition);
-            _.keyHandler = _.proxy(_.keyHandler);
 
             _.instanceUid = instanceUid++;
 
@@ -437,10 +435,6 @@
             _.$nextArrow && _.$nextArrow.unbind('click.ctx-slick', _.changeSlide);
         }
 
-        if (_.options.accessibility === true) {
-            _.$list.unbind('keydown.ctx-slick', _.keyHandler);
-        }
-
         $(window).unbind('orientationchange.ctx-slick.ctx-slick-' + _.instanceUid, _.orientationChange);
 
         $(window).unbind('resize.ctx-slick.ctx-slick-' + _.instanceUid, _.resize);
@@ -600,10 +594,6 @@
 
         }
 
-        if (_.options.accessibility === true) {
-            _.initADA();
-        }
-
     };
 
     Slick.prototype.initArrowEvents = function() {
@@ -627,10 +617,6 @@
 
         _.initArrowEvents();
 
-        if (_.options.accessibility === true) {
-            _.$list.bind('keydown.ctx-slick', _.keyHandler);
-        }
-
         $(window).bind('orientationchange.ctx-slick.ctx-slick-' + _.instanceUid, _.proxy(_.orientationChange));
 
         $(window).bind('resize.ctx-slick.ctx-slick-' + _.instanceUid, _.proxy(_.resize));
@@ -649,28 +635,6 @@
             _.$prevArrow.show();
             _.$nextArrow.show();
 
-        }
-
-    };
-
-    Slick.prototype.keyHandler = function(event) {
-
-        var _ = this;
-         //Dont slide if the cursor is inside the form fields and arrow keys are pressed
-        if(!event.target.tagName.match('TEXTAREA|INPUT|SELECT')) {
-            if (event.keyCode === 37 && _.options.accessibility === true) {
-                _.changeSlide({
-                    data: {
-                        message: 'previous'
-                    }
-                });
-            } else if (event.keyCode === 39 && _.options.accessibility === true) {
-                _.changeSlide({
-                    data: {
-                        message: 'next'
-                    }
-                });
-            }
         }
 
     };
@@ -706,10 +670,6 @@
         _.animating = false;
 
         _.setPosition();
-
-        if (_.options.accessibility === true) {
-            _.initADA();
-        }
 
     };
 
@@ -1081,39 +1041,6 @@
         } else {
             _.postSlide(animSlide);
         }
-
-    };
-
-    Slick.prototype.initADA = function() {
-        var _ = this;
-        _.$slides.add(_.$slideTrack.find('.ctx-slick-cloned')).attr({
-            'aria-hidden': 'true',
-            'tabindex': '-1'
-        }).find('a, input, button, select').attr({
-            'tabindex': '-1'
-        });
-
-        _.$slideTrack.attr('role', 'listbox');
-
-        _.$slides.not(_.$slideTrack.find('.ctx-slick-cloned')).each(function(i) {
-            $(this).attr({
-                'role': 'option',
-                'aria-describedby': 'ctx-slick-slide' + _.instanceUid + i + ''
-            });
-        });
-
-        _.activateADA();
-
-    };
-
-    Slick.prototype.activateADA = function() {
-        var _ = this;
-
-        _.$slideTrack.find('.ctx-slick-active').attr({
-            'aria-hidden': 'false'
-        }).find('a, input, button, select').attr({
-            'tabindex': '0'
-        });
 
     };
 
