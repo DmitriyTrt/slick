@@ -36,7 +36,6 @@
                 cssEase: 'ease',
                 easing: 'linear',
                 initialSlide: 0,
-                respondTo: 'window',
                 responsive: null,
                 slide: '',
                 slidesToShow: 1,
@@ -79,7 +78,6 @@
             _.breakpointSettings = [];
             _.cssTransitions = false;
             _.positionProp = null;
-            _.respondTo = null;
             _.rowCount = 1;
             _.$slider = $element;
             _.$slidesCache = null;
@@ -297,16 +295,8 @@
 
         var _ = this,
             breakpoint, targetBreakpoint, respondToWidth, triggerBreakpoint = false;
-        var sliderWidth = _.$slider.width();
-        var windowWidth = window.innerWidth || $(window).width();
 
-        if (_.respondTo === 'window') {
-            respondToWidth = windowWidth;
-        } else if (_.respondTo === 'slider') {
-            respondToWidth = sliderWidth;
-        } else if (_.respondTo === 'min') {
-            respondToWidth = Math.min(windowWidth, sliderWidth);
-        }
+        respondToWidth = _.$slider.width();
 
         if ( _.options.responsive &&
             _.options.responsive.length &&
@@ -756,8 +746,6 @@
             responsiveSettings = _.options.responsive || null;
 
         if ( Contextly.Utils.isArray(responsiveSettings) && responsiveSettings.length ) {
-
-            _.respondTo = _.options.respondTo || 'window';
 
             for ( breakpoint in responsiveSettings ) {
 
