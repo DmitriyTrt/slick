@@ -25,11 +25,6 @@
     &:focus {
         outline: none;
     }
-
-    &.dragging {
-        cursor: pointer;
-        cursor: hand;
-    }
 }
 .ctx-slick-slider .ctx-slick-track,
 .ctx-slick-slider .ctx-slick-list {
@@ -75,10 +70,6 @@
     }
 
     display: none;
-
-    &.dragging img {
-        pointer-events: none;
-    }
 
     .ctx-slick-initialized & {
         display: block;

@@ -34,9 +34,7 @@
                 centerMode: false,
                 centerPadding: '50px',
                 cssEase: 'ease',
-                draggable: true,
                 easing: 'linear',
-                edgeFriction: 0.35,
                 infinite: true,
                 initialSlide: 0,
                 mobileFirst: false,
@@ -46,10 +44,6 @@
                 slidesToShow: 1,
                 slidesToScroll: 1,
                 speed: 500,
-                swipe: true,
-                swipeToSlide: false,
-                touchMove: true,
-                touchThreshold: 5,
                 useCSS: true,
                 useTransform: false,
                 waitForAnimate: true,
@@ -58,7 +52,6 @@
 
             _.initials = {
                 animating: false,
-                dragging: false,
                 currentDirection: 0,
                 currentLeft: null,
                 currentSlide: 0,
@@ -74,9 +67,7 @@
                 $slides: null,
                 sliding: false,
                 slideOffset: 0,
-                swipeLeft: null,
                 $list: null,
-                touchObject: {},
                 transformsEnabled: false,
                 unslicked: false
             };
@@ -92,7 +83,6 @@
             _.positionProp = null;
             _.respondTo = null;
             _.rowCount = 1;
-            _.shouldClick = true;
             _.$slider = $element;
             _.$slidesCache = null;
             _.transformType = null;
@@ -109,9 +99,7 @@
             _.originalSettings = _.options;
 
             _.changeSlide = _.proxy(_.changeSlide);
-            _.clickHandler = _.proxy(_.clickHandler);
             _.setPosition = _.proxy(_.setPosition);
-            _.swipeHandler = _.proxy(_.swipeHandler);
             _.keyHandler = _.proxy(_.keyHandler);
 
             _.instanceUid = instanceUid++;
@@ -300,7 +288,7 @@
             '<div aria-live="polite" class="ctx-slick-list"/>').parent();
         _.$slideTrack.css('opacity', 0);
 
-        if (_.options.centerMode === true || _.options.swipeToSlide === true) {
+        if (_.options.centerMode === true) {
             _.options.slidesToScroll = 1;
         }
 
@@ -310,10 +298,6 @@
 
 
         _.setSlideClasses(typeof _.currentSlide === 'number' ? _.currentSlide : 0);
-
-        if (_.options.draggable === true) {
-            _.$list.addClass('draggable');
-        }
 
     };
 
@@ -477,13 +461,6 @@
             _.$nextArrow && _.$nextArrow.unbind('click.ctx-slick', _.changeSlide);
         }
 
-        _.$list.unbind('touchstart.ctx-slick mousedown.ctx-slick', _.swipeHandler);
-        _.$list.unbind('touchmove.ctx-slick mousemove.ctx-slick', _.swipeHandler);
-        _.$list.unbind('touchend.ctx-slick mouseup.ctx-slick', _.swipeHandler);
-        _.$list.unbind('touchcancel.ctx-slick mouseleave.ctx-slick', _.swipeHandler);
-
-        _.$list.unbind('click.ctx-slick', _.clickHandler);
-
         if (_.options.accessibility === true) {
             _.$list.unbind('keydown.ctx-slick', _.keyHandler);
         }
@@ -492,28 +469,13 @@
 
         $(window).unbind('resize.ctx-slick.ctx-slick-' + _.instanceUid, _.resize);
 
-        $('[draggable!=true]', _.$slideTrack).unbind('dragstart', _.preventDefault);
-
         $(window).unbind('load.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
         $(document).unbind('ready.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
-    };
-
-    Slick.prototype.clickHandler = function(event) {
-
-        var _ = this;
-
-        if (_.shouldClick === false) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-
     };
 
     Slick.prototype.destroy = function(refresh) {
 
         var _ = this;
-
-        _.touchObject = {};
 
         _.cleanUpEvents();
 
@@ -689,31 +651,6 @@
 
     };
 
-    Slick.prototype.getSlideCount = function() {
-
-        var _ = this,
-            slidesTraversed, swipedSlide, centerOffset;
-
-        centerOffset = _.options.centerMode === true ? _.slideWidth * Math.floor(_.options.slidesToShow / 2) : 0;
-
-        if (_.options.swipeToSlide === true) {
-            _.$slideTrack.find('.ctx-slick-slide').each(function(index, slide) {
-                if (slide.offsetLeft - centerOffset + ($(slide).outerWidth() / 2) > (_.swipeLeft * -1)) {
-                    swipedSlide = slide;
-                    return false;
-                }
-            });
-
-            slidesTraversed = Math.abs($(swipedSlide).attr('data-ctx-slick-index') - _.currentSlide) || 1;
-
-            return slidesTraversed;
-
-        } else {
-            return _.options.slidesToScroll;
-        }
-
-    };
-
     Slick.prototype.init = function() {
 
         var _ = this;
@@ -758,21 +695,6 @@
 
         _.initArrowEvents();
 
-        _.$list.bind('touchstart.ctx-slick mousedown.ctx-slick', {
-            action: 'start'
-        }, _.swipeHandler);
-        _.$list.bind('touchmove.ctx-slick mousemove.ctx-slick', {
-            action: 'move'
-        }, _.swipeHandler);
-        _.$list.bind('touchend.ctx-slick mouseup.ctx-slick', {
-            action: 'end'
-        }, _.swipeHandler);
-        _.$list.bind('touchcancel.ctx-slick mouseleave.ctx-slick', {
-            action: 'end'
-        }, _.swipeHandler);
-
-        _.$list.bind('click.ctx-slick', _.clickHandler);
-
         if (_.options.accessibility === true) {
             _.$list.bind('keydown.ctx-slick', _.keyHandler);
         }
@@ -780,8 +702,6 @@
         $(window).bind('orientationchange.ctx-slick.ctx-slick-' + _.instanceUid, _.proxy(_.orientationChange));
 
         $(window).bind('resize.ctx-slick.ctx-slick-' + _.instanceUid, _.proxy(_.resize));
-
-        $('[draggable!=true]', _.$slideTrack).bind('dragstart', _.preventDefault);
 
         $(window).bind('load.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
         $(document).bind('ready.ctx-slick.ctx-slick-' + _.instanceUid, _.setPosition);
@@ -857,16 +777,10 @@
 
         _.setPosition();
 
-        _.swipeLeft = null;
-
         if (_.options.accessibility === true) {
             _.initADA();
         }
 
-    };
-
-    Slick.prototype.preventDefault = function(event) {
-        event.preventDefault();
     };
 
     Slick.prototype.refresh = function( initializing ) {
@@ -1227,7 +1141,7 @@
         targetLeft = _.getLeft(targetSlide);
         slideLeft = _.getLeft(_.currentSlide);
 
-        _.currentLeft = _.swipeLeft === null ? slideLeft : _.swipeLeft;
+        _.currentLeft = slideLeft;
 
         if (_.options.infinite === false && _.options.centerMode === false && (index < 0 || index > _.getDotCount() * _.options.slidesToScroll)) {
             targetSlide = _.currentSlide;
@@ -1300,190 +1214,6 @@
         }
 
         _.$slider.addClass('ctx-slick-loading');
-
-    };
-
-    Slick.prototype.swipeDirection = function() {
-
-        var xDist, yDist, r, swipeAngle, _ = this;
-
-        xDist = _.touchObject.startX - _.touchObject.curX;
-        yDist = _.touchObject.startY - _.touchObject.curY;
-        r = Math.atan2(yDist, xDist);
-
-        swipeAngle = Math.round(r * 180 / Math.PI);
-        if (swipeAngle < 0) {
-            swipeAngle = 360 - Math.abs(swipeAngle);
-        }
-
-        if ((swipeAngle <= 45) && (swipeAngle >= 0)) {
-            return 'left';
-        }
-        if ((swipeAngle <= 360) && (swipeAngle >= 315)) {
-            return 'left';
-        }
-        if ((swipeAngle >= 135) && (swipeAngle <= 225)) {
-            return 'right';
-        }
-
-        return 'vertical';
-
-    };
-
-    Slick.prototype.swipeEnd = function(event) {
-
-        var _ = this,
-            slideCount;
-
-        _.dragging = false;
-
-        _.shouldClick = (_.touchObject.swipeLength <= 10);
-
-        if (_.touchObject.curX === undefined) {
-            return false;
-        }
-
-        if (_.touchObject.edgeHit === true) {
-            _.$slider.trigger('edge', [_, _.swipeDirection()]);
-        }
-
-        if (_.touchObject.swipeLength >= _.touchObject.minSwipe) {
-
-            switch (_.swipeDirection()) {
-                case 'left':
-                    slideCount = _.options.swipeToSlide ? _.checkNavigable(_.currentSlide + _.getSlideCount()) : _.currentSlide + _.getSlideCount();
-                    _.slideHandler(slideCount);
-                    _.currentDirection = 0;
-                    _.touchObject = {};
-                    _.$slider.trigger('swipe', [_, 'left']);
-                    break;
-
-                case 'right':
-                    slideCount = _.options.swipeToSlide ? _.checkNavigable(_.currentSlide - _.getSlideCount()) : _.currentSlide - _.getSlideCount();
-                    _.slideHandler(slideCount);
-                    _.currentDirection = 1;
-                    _.touchObject = {};
-                    _.$slider.trigger('swipe', [_, 'right']);
-                    break;
-            }
-        } else {
-            if (_.touchObject.startX !== _.touchObject.curX) {
-                _.slideHandler(_.currentSlide);
-                _.touchObject = {};
-            }
-        }
-
-    };
-
-    Slick.prototype.swipeHandler = function(event) {
-
-        var _ = this;
-
-        if ((_.options.swipe === false) || ('ontouchend' in document && _.options.swipe === false)) {
-            return;
-        } else if (_.options.draggable === false && event.type.indexOf('mouse') !== -1) {
-            return;
-        }
-
-        _.touchObject.fingerCount = event.originalEvent && event.originalEvent.touches !== undefined ?
-            event.originalEvent.touches.length : 1;
-
-        _.touchObject.minSwipe = _.listWidth / _.options
-            .touchThreshold;
-
-        switch (event.data.action) {
-
-            case 'start':
-                _.swipeStart(event);
-                break;
-
-            case 'move':
-                _.swipeMove(event);
-                break;
-
-            case 'end':
-                _.swipeEnd(event);
-                break;
-
-        }
-
-    };
-
-    Slick.prototype.swipeMove = function(event) {
-
-        var _ = this,
-            curLeft, swipeDirection, swipeLength, positionOffset, touches;
-
-        touches = event.originalEvent !== undefined ? event.originalEvent.touches : null;
-
-        if (!_.dragging || touches && touches.length !== 1) {
-            return false;
-        }
-
-        curLeft = _.getLeft(_.currentSlide);
-
-        _.touchObject.curX = touches !== undefined ? touches[0].pageX : event.clientX;
-        _.touchObject.curY = touches !== undefined ? touches[0].pageY : event.clientY;
-
-        _.touchObject.swipeLength = Math.round(Math.sqrt(
-            Math.pow(_.touchObject.curX - _.touchObject.startX, 2)));
-
-        swipeDirection = _.swipeDirection();
-
-        if (swipeDirection === 'vertical') {
-            return;
-        }
-
-        if (event.originalEvent !== undefined && _.touchObject.swipeLength > 4) {
-            event.preventDefault();
-        }
-
-        positionOffset = _.touchObject.curX > _.touchObject.startX ? 1 : -1;
-
-        swipeLength = _.touchObject.swipeLength;
-
-        _.touchObject.edgeHit = false;
-
-        if (_.options.infinite === false) {
-            if ((_.currentSlide === 0 && swipeDirection === 'right') || (_.currentSlide >= _.getDotCount() && swipeDirection === 'left')) {
-                swipeLength = _.touchObject.swipeLength * _.options.edgeFriction;
-                _.touchObject.edgeHit = true;
-            }
-        }
-
-        _.swipeLeft = curLeft + swipeLength * positionOffset;
-
-        if (_.options.touchMove === false) {
-            return false;
-        }
-
-        if (_.animating === true) {
-            _.swipeLeft = null;
-            return false;
-        }
-
-        _.setCSS(_.swipeLeft);
-
-    };
-
-    Slick.prototype.swipeStart = function(event) {
-
-        var _ = this,
-            touches;
-
-        if (_.touchObject.fingerCount !== 1 || _.slideCount <= _.options.slidesToShow) {
-            _.touchObject = {};
-            return false;
-        }
-
-        if (event.originalEvent !== undefined && event.originalEvent.touches !== undefined) {
-            touches = event.originalEvent.touches[0];
-        }
-
-        _.touchObject.startX = _.touchObject.curX = touches !== undefined ? touches.pageX : event.clientX;
-        _.touchObject.startY = _.touchObject.curY = touches !== undefined ? touches.pageY : event.clientY;
-
-        _.dragging = true;
 
     };
 
