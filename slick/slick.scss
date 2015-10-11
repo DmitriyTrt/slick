@@ -51,9 +51,6 @@
         clear: both;
     }
 
-    .ctx-slick-loading & {
-        visibility: hidden;
-    }
 }
 .ctx-slick-slide {
     float: left;
@@ -65,18 +62,11 @@
     img {
         display: block;
     }
-    &.ctx-slick-loading img {
-        display: none;
-    }
 
     display: none;
 
     .ctx-slick-initialized & {
         display: block;
-    }
-
-    .ctx-slick-loading & {
-        visibility: hidden;
     }
 
 }

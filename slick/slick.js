@@ -654,7 +654,6 @@
 
             _.buildOut();
             _.setProps();
-            _.startLoad();
             _.loadSlider();
             _.initializeEvents();
             _.updateArrows();
@@ -745,8 +744,6 @@
         _.$slideTrack.css({
             opacity: 1
         });
-
-        _.$slider.removeClass('ctx-slick-loading');
 
         _.initUI();
     };
@@ -1192,21 +1189,6 @@
         } else {
             _.postSlide(animSlide);
         }
-
-    };
-
-    Slick.prototype.startLoad = function() {
-
-        var _ = this;
-
-        if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
-
-            _.$prevArrow.hide();
-            _.$nextArrow.hide();
-
-        }
-
-        _.$slider.addClass('ctx-slick-loading');
 
     };
 

@@ -48,9 +48,6 @@
 .ctx-slick-track:after {
   clear: both;
 }
-.ctx-slick-loading .ctx-slick-track {
-  visibility: hidden;
-}
 
 .ctx-slick-slide {
   float: left;
@@ -64,14 +61,8 @@
 .ctx-slick-slide img {
   display: block;
 }
-.ctx-slick-slide.ctx-slick-loading img {
-  display: none;
-}
 .ctx-slick-initialized .ctx-slick-slide {
   display: block;
-}
-.ctx-slick-loading .ctx-slick-slide {
-  visibility: hidden;
 }
 
 .ctx-slick-arrow.ctx-slick-hidden {
